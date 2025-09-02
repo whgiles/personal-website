@@ -6,6 +6,8 @@
 // 4) Start: npm run dev  •  Deploy: Vercel/Netlify/GitHub Pages (static export needs next.config.js adjustments).
 
 import type { Metadata } from "next";
+import type { JSX } from "react";
+
 
 export const metadata: Metadata = {
   title: "Hunter Giles — Resume",
