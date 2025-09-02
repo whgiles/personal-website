@@ -2,143 +2,348 @@
 // 1) npm i react-icons
 // 2) Put your resume at public/resume.pdf
 
-import type { Metadata } from "next";
-import type { JSX } from "react";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+"use client";
 
-export const metadata: Metadata = {
-  title: "W. Hunter Giles — Resume",
-  description:
-    "Software Engineer specializing in microservices, data platforms, and cloud infrastructure.",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
-};
+import type { JSX } from "react";
+import { useState, useEffect } from "react";
+import { FaGithub, FaLinkedin, FaDownload, FaMapMarkerAlt, FaEnvelope, FaMoon, FaSun } from "react-icons/fa";
 
 type ProjectCardProps = {
   title: string;
   blurb: string;
   links: { label: string; href: string }[];
+  tags: string[];
 };
 
+// Theme configuration object
+const themes = {
+  light: {
+    background: 'bg-gradient-to-br from-slate-50 via-white to-slate-50',
+    card: 'bg-white/80 border-slate-200/60 hover:border-slate-300/80 hover:shadow-lg',
+    headerCard: 'bg-white/70 border-white/20',
+    headerGradient: 'bg-gradient-to-r from-blue-600/5 to-purple-600/5',
+    text: {
+      primary: 'text-slate-900',
+      secondary: 'text-slate-600',
+      tertiary: 'text-slate-500',
+      muted: 'text-slate-400',
+      gradient: 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700',
+    },
+    button: {
+      primary: 'bg-slate-900 text-white hover:bg-slate-800',
+      secondary: 'bg-slate-100 text-slate-700 hover:bg-slate-200',
+      github: 'bg-slate-800 hover:bg-slate-900',
+    },
+    accent: 'bg-gradient-to-r from-blue-500 to-purple-500',
+    tag: 'bg-slate-100 text-slate-700',
+    link: 'text-blue-600 hover:text-blue-700',
+    border: 'border-slate-200/60',
+    toggle: 'bg-white/80 border-slate-200/60',
+  },
+  dark: {
+    background: 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900',
+    card: 'bg-slate-800/80 border-slate-700/60 hover:border-slate-600/80 hover:shadow-slate-900/20',
+    headerCard: 'bg-slate-800/70 border-slate-700/30',
+    headerGradient: 'bg-gradient-to-r from-blue-400/10 to-purple-400/10',
+    text: {
+      primary: 'text-slate-100',
+      secondary: 'text-slate-300',
+      tertiary: 'text-slate-400',
+      muted: 'text-slate-500',
+      gradient: 'bg-gradient-to-r from-slate-100 via-slate-200 to-slate-300',
+    },
+    button: {
+      primary: 'bg-slate-100 text-slate-900 hover:bg-white',
+      secondary: 'bg-slate-700 text-slate-300 hover:bg-slate-600',
+      github: 'bg-slate-700 hover:bg-slate-600',
+    },
+    accent: 'bg-gradient-to-r from-blue-400 to-purple-400',
+    tag: 'bg-slate-700 text-slate-300',
+    link: 'text-blue-400 hover:text-blue-300',
+    border: 'border-slate-700/60',
+    toggle: 'bg-slate-800/80 border-slate-700/60',
+  },
+};
+
+// Theme utility function
+const getTheme = (darkMode: boolean) => darkMode ? themes.dark : themes.light;
+const storageKey = "theme"; // "dark" | "light"
+
+function getInitialDark(): boolean {
+  if (typeof window === "undefined") return false; // SSR fallback (we'll correct on mount)
+  const saved = window.localStorage.getItem(storageKey);
+  if (saved === "dark") return true;
+  if (saved === "light") return false;
+  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
+}
+
 export default function Page(): JSX.Element {
-  const skills: string[] = [
-    "TypeScript / Node / NestJS",
-    "Java / Spring",
-    "PostgreSQL / TypeORM",
-    "GCP (Cloud Run, Pub/Sub, BigQuery)",
-    "Databricks / Spark",
-    "Terraform / GitHub Actions",
-    "Docker",
+  const [darkMode, setDarkMode] = useState<boolean | null>(null);
+
+  // Initialize on mount
+  useEffect(() => {
+    setDarkMode(getInitialDark());
+  }, []);
+
+  // Persist whenever it changes
+  useEffect(() => {
+    if (darkMode === null) return;
+    window.localStorage.setItem(storageKey, darkMode ? "dark" : "light");
+  }, [darkMode]);
+
+  // Keep tabs/windows in sync
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === storageKey && e.newValue) {
+        setDarkMode(e.newValue === "dark");
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  // Optional: follow system changes only if user hasn’t chosen (i.e., no saved key)
+  useEffect(() => {
+    const saved = window.localStorage.getItem(storageKey);
+    if (saved) return; // user preference wins
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = () => setDarkMode(mq.matches);
+    mq.addEventListener?.("change", handler);
+    return () => mq.removeEventListener?.("change", handler);
+  }, []);
+
+  if (darkMode === null) {
+    // Prevent initial flash while we detect the real value
+    return <div className="min-h-screen bg-black/0" />;
+  }
+
+  const theme = getTheme(darkMode);
+
+  const skills: { category: string; items: string[] }[] = [
+    {
+      category: "Languages & Frameworks",
+      items: ["TypeScript", "Node.js", "NestJS", "Java", "Spring"],
+    },
+    {
+      category: "Data & Infrastructure",
+      items: ["PostgreSQL", "TypeORM", "Databricks", "Apache Spark"],
+    },
+    {
+      category: "Cloud & DevOps",
+      items: ["GCP", "Cloud Run", "Pub/Sub", "BigQuery", "Terraform", "GitHub Actions", "Docker"],
+    },
   ];
 
   const projects: ProjectCardProps[] = [
     {
       title: "Microservice Version Dashboard",
       blurb:
-        "Aggregates /health/version endpoints to visualize deployed versions across environments. GitHub Actions + GitHub Pages + TypeScript.",
+        "Real-time aggregation of /health/version endpoints to visualize deployed versions across multiple environments. Built with modern CI/CD integration.",
       links: [
-        { label: "Repo", href: "#" },
-        { label: "Live", href: "#" },
+        { label: "Repository", href: "#" },
+        { label: "Live Demo", href: "#" },
       ],
+      tags: ["TypeScript", "GitHub Actions", "Monitoring"],
     },
     {
       title: "Shorts Generation Pipeline",
       blurb:
-        "Cloud Run Jobs orchestrated via Firestore triggers & Pub/Sub. Steps: script → audio → image → stitch → publish.",
-      links: [{ label: "Write-up", href: "#" }],
+        "Automated video generation pipeline using Cloud Run Jobs with Firestore triggers. Orchestrates script generation, audio synthesis, image processing, and publishing workflows.",
+      links: [{ label: "Technical Write-up", href: "#" }],
+      tags: ["GCP", "Pub/Sub", "Media Processing"],
     },
   ];
 
   return (
-    <main className="max-w-5xl mx-auto p-6 md:p-10 bg-neutral-50 text-neutral-900">
-      <Header />
-      <Skills skills={skills} />
-      <ResumePDF />
-      {/* <Projects projects={projects} /> */}
-      <Footer />
-    </main>
+    <div className={`min-h-screen transition-colors duration-300 ${theme.background}`}>
+      <main className="max-w-4xl mx-auto px-6 py-12 md:px-8 md:py-16">
+        <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} theme={theme} />
+        <Header theme={theme} />
+        <div className="mt-12 space-y-12">
+          <Skills skills={skills} theme={theme} />
+          <ResumePDF theme={theme} />
+
+          {/* <Projects projects={projects} theme={theme} /> */}
+        </div>
+        <Footer theme={theme} />
+      </main>
+    </div>
   );
 }
 
-function Header(): JSX.Element {
+ function ThemeToggle({
+    darkMode,
+    setDarkMode,
+    theme,
+  }: {
+    darkMode: boolean;
+    setDarkMode: (val: boolean) => void;
+    theme: typeof themes.light | typeof themes.dark;
+  }): JSX.Element {
+    return (
+      <div className="flex justify-end mb-8">
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className={`group relative p-3 rounded-full backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 ${theme.toggle}`}
+          aria-label="Toggle dark mode"
+        >
+          <div className="relative w-5 h-5">
+            <FaSun
+              className={`absolute inset-0 w-5 h-5 text-amber-500 transition-all duration-300 ${
+                darkMode ? "opacity-0 rotate-90 scale-75" : "opacity-100 rotate-0 scale-100"
+              }`}
+            />
+            <FaMoon
+              className={`absolute inset-0 w-5 h-5 text-slate-400 transition-all duration-300 ${
+                darkMode ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-75"
+              }`}
+            />
+          </div>
+        </button>
+      </div>
+    );
+  }
+
+function Header({ theme }: { theme: typeof themes.light }): JSX.Element {
   return (
-    <section className="bg-white rounded-2xl shadow-sm ring-1 ring-black/5 p-6 md:p-10">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">W. Hunter Giles</h1>
-          <p className="mt-1 text-neutral-600">
-            Software/Machine Learning Engineer • Microservices • Data Platforms 
-          </p>
-          <div className="mt-3 flex flex-wrap gap-3 text-sm text-neutral-700">
+    <header className="relative">
+      <div className={`absolute inset-0 rounded-3xl transition-colors duration-300 ${theme.headerGradient}`}></div>
+      <div className={`relative backdrop-blur-sm rounded-3xl shadow-xl p-8 md:p-12 transition-all duration-300 ${theme.headerCard}`}>
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
+          <div className="flex-1">
+            <div className="inline-flex items-center gap-3 mb-4">
+              <div className="w-3 h-3 rounded-full bg-gradient-to-r from-green-400 to-green-500 animate-pulse"></div>
+              <span className={`text-sm font-medium transition-colors duration-300 ${theme.text.secondary}`}>Available for opportunities</span>
+            </div>
+            
+            <h1 className={`text-4xl md:text-5xl font-bold bg-clip-text text-transparent leading-tight ${theme.text.gradient}`}>
+              W. Hunter Giles
+            </h1>
+            
+            <p className={`mt-3 text-xl font-medium transition-colors duration-300 ${theme.text.secondary}`}>
+              Software & Machine Learning Engineer
+            </p>
+            
+            <p className={`mt-2 max-w-lg leading-relaxed transition-colors duration-300 ${theme.text.tertiary}`}>
+              Specialized in building scalable microservices, data platforms, and cloud infrastructure. 
+              Passionate about creating elegant solutions to complex technical challenges.
+            </p>
+
+            <div className={`mt-6 flex items-center gap-2 transition-colors duration-300 ${theme.text.tertiary}`}>
+              <FaMapMarkerAlt className="w-4 h-4" />
+              <span>Atlanta, GA</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3">
             <a
               href="/resume.pdf"
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 hover:bg-neutral-200 transition"
+              className={`group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 ${theme.button.primary}`}
             >
-              Download Resume (PDF)
+              <FaDownload className="w-4 h-4 group-hover:animate-bounce" />
+              Download Resume
             </a>
 
-            {/* LinkedIn (brand button) */}
-            <a
-              href="https://www.linkedin.com/in/hunter-giles-75497712a/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0A66C2] text-white hover:bg-[#004182] transition shadow"
-            >
-              <FaLinkedin />
-              LinkedIn
-            </a>
+            <div className="flex gap-3">
+              <a
+                href="https://www.linkedin.com/in/hunter-giles-75497712a/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#0A66C2] hover:bg-[#004182] text-white shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105"
+              >
+                <FaLinkedin className="w-4 h-4 group-hover:rotate-6 transition-transform" />
+                <span className="hidden sm:inline font-medium">LinkedIn</span>
+              </a>
 
-            {/* GitHub (brand button) */}
-            <a
-              href="https://github.com/whgiles"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#333] text-white hover:bg-black transition shadow"
-            >
-              <FaGithub />
-              GitHub
-            </a>
-
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100">
-              Atlanta, GA
-            </span>
+              <a
+                href="https://github.com/whgiles"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-white shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105 ${theme.button.github}`}
+              >
+                <FaGithub className="w-4 h-4 group-hover:rotate-6 transition-transform" />
+                <span className="hidden sm:inline font-medium">GitHub</span>
+              </a>
+            </div>
           </div>
         </div>
+      </div>
+    </header>
+  );
+}
+
+function Skills({ skills, theme }: { skills: { category: string; items: string[] }[]; theme: typeof themes.light }): JSX.Element {
+  return (
+    <section>
+      <h2 className={`text-2xl font-bold mb-6 transition-colors duration-300 ${theme.text.primary}`}>Technical Skills</h2>
+      <div className="grid md:grid-cols-3 gap-6">
+        {skills.map((skillGroup, index) => (
+          <div
+            key={skillGroup.category}
+            className={`group backdrop-blur-sm rounded-2xl p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 ${theme.card}`}
+          >
+            <h3 className={`font-semibold mb-4 text-sm uppercase tracking-wide transition-colors duration-300 ${theme.text.secondary}`}>
+              {skillGroup.category}
+            </h3>
+            <div className="space-y-2">
+              {skillGroup.items.map((skill, skillIndex) => (
+                <div
+                  key={skill}
+                  className={`flex items-center gap-3 transition-colors duration-300 ${theme.text.secondary} group-hover:${theme.text.primary}`}
+                  style={{
+                    animationDelay: `${index * 100 + skillIndex * 50}ms`,
+                  }}
+                >
+                  <div className={`w-1.5 h-1.5 rounded-full ${theme.accent}`}></div>
+                  <span className="text-sm font-medium">{skill}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
 }
 
-function Skills({ skills }: { skills: string[] }): JSX.Element {
+function Projects({ projects, theme }: { projects: ProjectCardProps[]; theme: typeof themes.light }): JSX.Element {
   return (
-    <section className="mt-8">
-      <h2 className="text-xl font-semibold">Skills</h2>
-      <ul className="mt-2 flex flex-wrap gap-2 text-sm">
-        {skills.map((s) => (
-          <li
-            key={s}
-            className="px-3 py-1 rounded-full bg-purple-50 text-purple-800 border border-purple-100"
+    <section>
+      <h2 className={`text-2xl font-bold mb-6 transition-colors duration-300 ${theme.text.primary}`}>Selected Projects</h2>
+      <div className="grid md:grid-cols-2 gap-6">
+        {projects.map((project, index) => (
+          <article
+            key={project.title}
+            className={`group backdrop-blur-sm rounded-2xl p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 ${theme.card}`}
           >
-            {s}
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
+            <h3 className={`font-bold text-lg mb-3 transition-colors duration-300 ${theme.text.primary} ${theme.link}`}>
+              {project.title}
+            </h3>
+            
+            <p className={`leading-relaxed mb-4 transition-colors duration-300 ${theme.text.secondary}`}>
+              {project.blurb}
+            </p>
 
-function Projects({ projects }: { projects: ProjectCardProps[] }): JSX.Element {
-  return (
-    <section className="mt-8">
-      <h2 className="text-xl font-semibold">Selected Projects</h2>
-      <div className="mt-4 grid md:grid-cols-2 gap-4">
-        {projects.map((p) => (
-          <article key={p.title} className="rounded-2xl border border-neutral-200 bg-white p-4">
-            <h3 className="font-medium">{p.title}</h3>
-            <p className="mt-1 text-sm text-neutral-700">{p.blurb}</p>
-            <div className="mt-2 text-sm flex gap-4">
-              {p.links.map((l) => (
-                <a key={l.label} className="text-purple-700 hover:underline" href={l.href}>
-                  {l.label}
+            <div className="flex flex-wrap gap-2 mb-4">
+              {project.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className={`px-2 py-1 text-xs font-medium rounded-lg transition-colors duration-300 ${theme.tag}`}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            <div className="flex gap-4 text-sm">
+              {project.links.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className={`inline-flex items-center gap-1 font-medium hover:underline transition-colors duration-300 ${theme.link}`}
+                >
+                  {link.label}
+                  <span className="group-hover:translate-x-0.5 transition-transform duration-300">→</span>
                 </a>
               ))}
             </div>
@@ -149,44 +354,61 @@ function Projects({ projects }: { projects: ProjectCardProps[] }): JSX.Element {
   );
 }
 
-function ResumePDF(): JSX.Element {
+function ResumePDF({ theme }: { theme: typeof themes.light }): JSX.Element {
   return (
-    <section id="resume" className="mt-8">
-      <h2 className="text-xl font-semibold flex items-center justify-between">
-        Resume
+    <section id="resume">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className={`text-2xl font-bold transition-colors duration-300 ${theme.text.primary}`}>Resume</h2>
         <a
           href="/resume.pdf"
-          className="text-sm px-3 py-1 rounded-lg bg-purple-700 text-white hover:bg-purple-800 shadow"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105"
         >
+          <FaDownload className="w-4 h-4" />
           Download PDF
         </a>
-      </h2>
-      <p className="mt-2 text-sm text-neutral-700">
-        The site highlights skills and projects; the full CV is served as a static file. On mobile,
-        use the download button.
+      </div>
+      
+      <p className={`mb-6 leading-relaxed transition-colors duration-300 ${theme.text.secondary}`}>
+        Complete work history, education, and detailed project descriptions. 
       </p>
-      <div className="mt-4 w-full rounded-2xl overflow-hidden ring-1 ring-black/5 bg-white">
+
+      <div className={`relative rounded-2xl overflow-hidden ring-1 shadow-lg transition-all duration-300 ${theme.card.split(' ')[0]} ${theme.border}`}>
+        <div className={`absolute inset-0 transition-colors duration-300 ${theme.headerGradient}`}></div>
         <object
           data="/resume.pdf#view=FitH"
           type="application/pdf"
-          className="w-full h-[75vh] hidden md:block"
+          className="relative w-full h-[80vh] hidden md:block"
         >
-          <div className="p-6 text-sm">
-            <p>
-              Your browser can’t display PDFs inline. Please{" "}
-              <a className="text-purple-700 underline" href="/resume.pdf">
-                download the PDF here
-              </a>
-              .
+          <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+            <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors duration-300 ${theme.button.secondary}`}>
+              <FaDownload className={`w-6 h-6 ${theme.text.muted}`} />
+            </div>
+            <p className={`mb-4 transition-colors duration-300 ${theme.text.secondary}`}>
+              Your browser doesn't support PDF preview.
             </p>
+            <a
+              href="/resume.pdf"
+              className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 ${theme.button.primary}`}
+            >
+              <FaDownload className="w-4 h-4" />
+              Download Resume
+            </a>
           </div>
         </object>
-        <div className="md:hidden p-4">
+        
+        <div className="md:hidden p-8 text-center">
+          <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300 ${theme.button.secondary}`}>
+            <FaDownload className={`w-6 h-6 ${theme.text.muted}`} />
+          </div>
+          <p className={`mb-6 transition-colors duration-300 ${theme.text.secondary}`}>
+            View the full resume on your device
+          </p>
           <a
             href="/resume.pdf"
-            className="inline-block px-4 py-2 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 shadow"
+            className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 ${theme.button.primary}`}
           >
-            Download resume.pdf
+            <FaDownload className="w-4 h-4" />
+            Download Resume
           </a>
         </div>
       </div>
@@ -194,10 +416,23 @@ function ResumePDF(): JSX.Element {
   );
 }
 
-function Footer(): JSX.Element {
+function Footer({ theme }: { theme: typeof themes.light }): JSX.Element {
   return (
-    <footer className="mt-10 pt-6 border-t border-neutral-200 text-xs text-neutral-600">
-      <p>© {new Date().getFullYear()} Hunter Giles. All rights reserved.</p>
+    <footer className={`mt-16 pt-8 border-t transition-colors duration-300 ${theme.border}`}>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <p className={`text-sm transition-colors duration-300 ${theme.text.tertiary}`}>
+          © {new Date().getFullYear()} W. Hunter Giles.
+        </p>
+        <div className={`flex items-center gap-6 text-sm ${theme.text.tertiary}`}>
+          <a
+            href="mailto:huntergiles2@gmail.com"
+            className={`inline-flex items-center gap-2 transition-colors duration-300 ${theme.link}`}
+          >
+            <FaEnvelope className="w-4 h-4" />
+            <span className="hidden sm:inline">Get in touch</span>
+          </a>
+        </div>
+      </div>
     </footer>
   );
 }
