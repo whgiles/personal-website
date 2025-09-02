@@ -1,19 +1,22 @@
 // app/page.tsx — Next.js 14+ (App Router) with TypeScript
-// Usage:
-// 1) Create a Next.js app with TS+Tailwind: npx create-next-app@latest my-resume --ts --tailwind --eslint
-// 2) Replace my-resume/app/page.tsx with this file.
-// 3) Put your resume file at: my-resume/public/resume.pdf
-// 4) Start: npm run dev  •  Deploy: Vercel/Netlify/GitHub Pages (static export needs next.config.js adjustments).
+// 1) npm i react-icons
+// 2) Put your resume at public/resume.pdf
 
 import type { Metadata } from "next";
 import type { JSX } from "react";
-
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 export const metadata: Metadata = {
-  title: "Hunter Giles — Resume",
+  title: "W. Hunter Giles — Resume",
   description:
     "Software Engineer specializing in microservices, data platforms, and cloud infrastructure.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
+};
+
+type ProjectCardProps = {
+  title: string;
+  blurb: string;
+  links: { label: string; href: string }[];
 };
 
 export default function Page(): JSX.Element {
@@ -21,8 +24,7 @@ export default function Page(): JSX.Element {
     "TypeScript / Node / NestJS",
     "Java / Spring",
     "PostgreSQL / TypeORM",
-    "BigQuery",
-    "GCP (Cloud Run, Pub/Sub, Firestore)",
+    "GCP (Cloud Run, Pub/Sub, BigQuery)",
     "Databricks / Spark",
     "Terraform / GitHub Actions",
     "Docker",
@@ -42,17 +44,16 @@ export default function Page(): JSX.Element {
       title: "Shorts Generation Pipeline",
       blurb:
         "Cloud Run Jobs orchestrated via Firestore triggers & Pub/Sub. Steps: script → audio → image → stitch → publish.",
-      links: [{ label: "Write‑up", href: "#" }],
+      links: [{ label: "Write-up", href: "#" }],
     },
   ];
 
   return (
     <main className="max-w-5xl mx-auto p-6 md:p-10 bg-neutral-50 text-neutral-900">
       <Header />
-      <Highlights />
       <Skills skills={skills} />
-      <Projects projects={projects} />
       <ResumePDF />
+      {/* <Projects projects={projects} /> */}
       <Footer />
     </main>
   );
@@ -63,9 +64,9 @@ function Header(): JSX.Element {
     <section className="bg-white rounded-2xl shadow-sm ring-1 ring-black/5 p-6 md:p-10">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
-          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">Hunter Giles</h1>
+          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">W. Hunter Giles</h1>
           <p className="mt-1 text-neutral-600">
-            Software Engineer • Microservices • Data Platforms • Cloud (GCP)
+            Software/Machine Learning Engineer • Microservices • Data Platforms 
           </p>
           <div className="mt-3 flex flex-wrap gap-3 text-sm text-neutral-700">
             <a
@@ -74,18 +75,29 @@ function Header(): JSX.Element {
             >
               Download Resume (PDF)
             </a>
+
+            {/* LinkedIn (brand button) */}
             <a
-              href="https://www.linkedin.com/in/your-handle"
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 hover:bg-neutral-200 transition"
+              href="https://www.linkedin.com/in/hunter-giles-75497712a/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0A66C2] text-white hover:bg-[#004182] transition shadow"
             >
+              <FaLinkedin />
               LinkedIn
             </a>
+
+            {/* GitHub (brand button) */}
             <a
-              href="https://github.com/your-handle"
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 hover:bg-neutral-200 transition"
+              href="https://github.com/whgiles"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#333] text-white hover:bg-black transition shadow"
             >
+              <FaGithub />
               GitHub
             </a>
+
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100">
               Atlanta, GA
             </span>
@@ -93,33 +105,6 @@ function Header(): JSX.Element {
         </div>
       </div>
     </section>
-  );
-}
-
-function Highlights(): JSX.Element {
-  const items: { h: string; p: string }[] = [
-    {
-      h: "What I do",
-      p: "Design and ship backend services and data platforms: NestJS microservices, GCP (Cloud Run, Pub/Sub, Firestore), PostgreSQL/BigQuery, CI/CD.",
-    },
-    {
-      h: "Impact",
-      p: "Cut release friction with GitFlow + semver + GitVersion; automated deployments and versioning across environments.",
-    },
-    {
-      h: "Focus",
-      p: "API design • Event-driven systems • Data ingestion/CDC • Observability • Cost-aware architectures.",
-    },
-  ];
-  return (
-    <div className="mt-8 grid md:grid-cols-3 gap-4">
-      {items.map((card) => (
-        <div key={card.h} className="rounded-xl border border-neutral-200 bg-white p-4">
-          <h3 className="font-medium">{card.h}</h3>
-          <p className="mt-1 text-sm text-neutral-700">{card.p}</p>
-        </div>
-      ))}
-    </div>
   );
 }
 
@@ -140,12 +125,6 @@ function Skills({ skills }: { skills: string[] }): JSX.Element {
     </section>
   );
 }
-
-type ProjectCardProps = {
-  title: string;
-  blurb: string;
-  links: { label: string; href: string }[];
-};
 
 function Projects({ projects }: { projects: ProjectCardProps[] }): JSX.Element {
   return (
@@ -174,7 +153,7 @@ function ResumePDF(): JSX.Element {
   return (
     <section id="resume" className="mt-8">
       <h2 className="text-xl font-semibold flex items-center justify-between">
-        Resume (static PDF)
+        Resume
         <a
           href="/resume.pdf"
           className="text-sm px-3 py-1 rounded-lg bg-purple-700 text-white hover:bg-purple-800 shadow"
@@ -183,7 +162,8 @@ function ResumePDF(): JSX.Element {
         </a>
       </h2>
       <p className="mt-2 text-sm text-neutral-700">
-        The site highlights skills and projects; the full CV is served as a static file. On mobile, use the download button.
+        The site highlights skills and projects; the full CV is served as a static file. On mobile,
+        use the download button.
       </p>
       <div className="mt-4 w-full rounded-2xl overflow-hidden ring-1 ring-black/5 bg-white">
         <object
@@ -193,8 +173,7 @@ function ResumePDF(): JSX.Element {
         >
           <div className="p-6 text-sm">
             <p>
-              Your browser can’t display PDFs inline. Please
-              {" "}
+              Your browser can’t display PDFs inline. Please{" "}
               <a className="text-purple-700 underline" href="/resume.pdf">
                 download the PDF here
               </a>
