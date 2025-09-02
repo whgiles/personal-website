@@ -384,7 +384,7 @@ function ResumePDF({ theme }: { theme: typeof themes.light }): JSX.Element {
               <FaDownload className={`w-6 h-6 ${theme.text.muted}`} />
             </div>
             <p className={`mb-4 transition-colors duration-300 ${theme.text.secondary}`}>
-              Your browser doesn't support PDF preview.
+              Your browser does not support PDF preview.
             </p>
             <a
               href="/resume.pdf"
