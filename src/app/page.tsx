@@ -372,7 +372,7 @@ function ResumePDF({ theme }: { theme: typeof themes.light }): JSX.Element {
         Complete work history, education, and detailed project descriptions. 
       </p>
 
-      <div className={`relative rounded-2xl overflow-hidden ring-1 shadow-lg transition-all duration-300 ${theme.card.split(' ')[0]} ${theme.border}`}>
+      <div className={`relative rounded-2xl overflow-hidden ring-1 shadow-lg transition-all duration-300 ${theme.card.split(' ')[0]} ${theme.border} hidden md:block`}>
         <div className={`absolute inset-0 transition-colors duration-300 ${theme.headerGradient}`}></div>
         <object
           data="/resume.pdf#view=FitH"
