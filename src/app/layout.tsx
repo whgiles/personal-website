@@ -12,6 +12,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const metadata: Metadata = {
+  title: {
+    default: "W. Hunter Giles",
+    template: "%s",
+  },
+  description:
+    "Software and machine learning engineer focused on backend systems, data platforms, and reliable cloud infrastructure.",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -19,9 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
       </body>
     </html>

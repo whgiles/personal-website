@@ -1,0 +1,31 @@
+---
+title: Engineering for Operability
+slug: engineering-for-operability
+summary: Good systems are not only elegant in code, they are understandable, diagnosable, and recoverable in production.
+publishedAt: 2026-04-15
+updatedAt: 2026-04-15
+tags:
+  - operations
+  - distributed-systems
+  - software-engineering
+featured: true
+draft: false
+---
+
+A system is only as good as its behavior under stress. Operability is the difference between software that looks impressive and software that can be trusted.
+
+## Reduce ambiguity
+
+Operational ambiguity creates long incidents. Systems should emit enough context that an engineer can understand what happened without guessing.
+
+## Bias toward explicit state
+
+When workflows depend on hidden assumptions, production becomes brittle. Explicit states, durable checkpoints, and idempotent operations reduce risk dramatically.
+
+## Build for handoff
+
+The best systems are legible to the next engineer. Naming, documentation, dashboards, and deployment conventions all matter because they reduce cognitive load during change.
+
+## The real goal
+
+Good software is not just software that works. It is software that can keep working while the team and the requirements evolve.
