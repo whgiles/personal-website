@@ -11,27 +11,24 @@ function formatDate(dateString: string): string {
 
 export function ArticleCard({ article }: { article: Article }) {
   return (
-    <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
-      <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
+    <article className="border-b hn-rule pb-6 last:border-b-0">
+      <div className="flex flex-wrap items-center gap-3 text-xs hn-muted">
         <span>{formatDate(article.publishedAt)}</span>
         <span>•</span>
         <span>{article.readingTimeText}</span>
       </div>
 
-      <h3 className="mt-3 text-xl font-semibold text-slate-900 dark:text-slate-100">
-        <Link href={`/articles/${article.slug}`} className="hover:text-blue-600 dark:hover:text-blue-400">
+      <h3 className="mt-2 text-xl font-semibold tracking-tight">
+        <Link href={`/articles/${article.slug}`} className="hn-link">
           {article.title}
         </Link>
       </h3>
 
-      <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{article.summary}</p>
+      <p className="mt-2 max-w-2xl text-sm leading-6 hn-muted">{article.summary}</p>
 
       <div className="mt-4 flex flex-wrap gap-2">
         {article.tags.map((tag) => (
-          <span
-            key={tag}
-            className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300"
-          >
+          <span key={tag} className="hn-tag">
             {tag}
           </span>
         ))}

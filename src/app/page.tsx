@@ -21,92 +21,85 @@ export default function HomePage() {
   const featuredArticles = getFeaturedArticles(2);
 
   return (
-    <main className="min-h-screen bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-      <div className="mx-auto flex max-w-5xl flex-col gap-16 px-6 py-12 md:px-8 md:py-16">
-        <header className="rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-8 shadow-sm dark:border-slate-800 dark:from-slate-900 dark:to-slate-950 md:p-12">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
-            <div className="max-w-2xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-blue-600 dark:text-blue-400">
-                Available for opportunities
-              </p>
-              <h1 className="mt-4 text-4xl font-bold tracking-tight md:text-6xl">W. Hunter Giles</h1>
-              <p className="mt-4 text-xl font-medium text-slate-700 dark:text-slate-300">
-                Software and Machine Learning Engineer
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <a
-                  href="/resume.pdf"
-                  className="rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
-                >
-                  Download resume
+    <main className="min-h-screen px-4 py-6 md:px-6 md:py-8">
+      <div className="hn-shell overflow-hidden border hn-rule bg-[var(--panel)]">
+        <div className="hn-topline" />
+
+        <div className="px-5 py-6 md:px-8 md:py-8">
+          <header className="border-b hn-rule pb-8">
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-3xl">
+                <p className="hn-kicker">Available for opportunities</p>
+                <h1 className="mt-3 text-4xl font-bold tracking-tight md:text-6xl">W. Hunter Giles</h1>
+                <p className="mt-3 text-lg font-medium hn-muted md:text-xl">
+                  Software and Machine Learning Engineer
+                </p>
+                <div className="mt-6 flex flex-wrap gap-5 text-sm">
+                  <a href="/resume.pdf" className="hn-link font-medium">
+                    Resume
+                  </a>
+                  <Link href="/articles" className="hn-link font-medium">
+                    Articles
+                  </Link>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 text-sm hn-muted">
+                <a href="https://github.com/whgiles" target="_blank" rel="noreferrer" className="hn-link">
+                  GitHub
                 </a>
-                <Link
-                  href="/articles"
-                  className="rounded-xl border border-slate-300 px-5 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-900 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-500 dark:hover:text-white"
-                >
-                  Read articles
-                </Link>
+                <a href="https://www.linkedin.com/in/hunter-giles-75497712a/" target="_blank" rel="noreferrer" className="hn-link">
+                  LinkedIn
+                </a>
+                <a href="mailto:huntergiles2@gmail.com" className="hn-link">
+                  Contact
+                </a>
+                <span>Atlanta, GA</span>
               </div>
             </div>
+          </header>
 
-            <div className="flex flex-col gap-3 text-sm">
-              <a href="https://github.com/whgiles" target="_blank" rel="noreferrer" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">
-                GitHub
-              </a>
-              <a href="https://www.linkedin.com/in/hunter-giles-75497712a/" target="_blank" rel="noreferrer" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">
-                LinkedIn
-              </a>
-              <a href="mailto:huntergiles2@gmail.com" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">
-                Contact
-              </a>
-              <span className="text-slate-500 dark:text-slate-400">Atlanta, GA</span>
-            </div>
-          </div>
-        </header>
-
-        <section>
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-blue-600 dark:text-blue-400">Featured writing</p>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight">Engineering notes</h2>
-              <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">
-                Writing that shows how I think about systems design, reliability, data platforms, and platform engineering.
-              </p>
-            </div>
-            <Link href="/articles" className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">
-              View all →
-            </Link>
-          </div>
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
-            {featuredArticles.map((article) => (
-              <ArticleCard key={article.slug} article={article} />
-            ))}
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-3xl font-bold tracking-tight">Technical skills</h2>
-          <div className="mt-8 grid gap-6 md:grid-cols-3">
-            {skills.map((skillGroup) => (
-              <div
-                key={skillGroup.category}
-                className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
-              >
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300">
-                  {skillGroup.category}
-                </h3>
-                <ul className="mt-4 space-y-3 text-sm text-slate-700 dark:text-slate-300">
-                  {skillGroup.items.map((skill) => (
-                    <li key={skill} className="flex items-center gap-3">
-                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-                      <span>{skill}</span>
-                    </li>
-                  ))}
-                </ul>
+          <section className="border-b hn-rule py-8">
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <p className="hn-kicker">Writing</p>
+                <h2 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">Selected articles</h2>
+                <p className="mt-2 max-w-2xl text-sm leading-7 hn-muted md:text-base">
+                  Notes on infrastructure, systems, and practical engineering work.
+                </p>
               </div>
-            ))}
-          </div>
-        </section>
+              <Link href="/articles" className="hn-link text-sm font-medium">
+                View all →
+              </Link>
+            </div>
+            <div className="mt-8 space-y-6">
+              {featuredArticles.map((article) => (
+                <ArticleCard key={article.slug} article={article} />
+              ))}
+            </div>
+          </section>
+
+          <section className="py-8">
+            <p className="hn-kicker">Technical skills</p>
+            <div className="mt-5 grid gap-8 md:grid-cols-3">
+              {skills.map((skillGroup) => (
+                <div key={skillGroup.category}>
+                  <h3 className="text-sm font-semibold uppercase tracking-wide hn-muted">
+                    {skillGroup.category}
+                  </h3>
+                  <ul className="mt-4 space-y-2 text-sm leading-6">
+                    {skillGroup.items.map((skill) => (
+                      <li key={skill} className="flex items-start gap-2">
+                        <span className="mt-[0.45rem] h-1 w-1 rounded-full bg-[var(--accent)]" />
+                        <span>{skill}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
       </div>
     </main>
   );
