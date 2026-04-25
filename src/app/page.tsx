@@ -4,16 +4,16 @@ import { getFeaturedArticles } from "@/lib/articles";
 
 const skills: { category: string; items: string[] }[] = [
   {
-    category: "Languages & Frameworks",
-    items: ["TypeScript", "Node.js", "NestJS", "Java", "Spring"],
+    category: "Languages & Backend Engineering",
+    items: ["TypeScript", "Python", "Java", "C#", "Node.js", "NestJS", "Spring", ".NET"],
   },
   {
-    category: "Data & Infrastructure",
-    items: ["PostgreSQL", "TypeORM", "Databricks", "Apache Spark"],
+    category: "Data, ML & Analytics Platforms",
+    items: ["Databricks", "Apache Spark", "PySpark", "BigQuery", "Structured Streaming", "Delta Tables", "PyTorch", "Keras"],
   },
   {
-    category: "Cloud & DevOps",
-    items: ["GCP", "Cloud Run", "Pub/Sub", "BigQuery", "Terraform", "GitHub Actions", "Docker"],
+    category: "Cloud, DevOps & Infrastructure",
+    items: ["Google Cloud Platform", "Cloud Run", "Pub/Sub", "Terraform", "Docker", "GitHub Actions", "Kubernetes", "k3s"],
   },
 ];
 
