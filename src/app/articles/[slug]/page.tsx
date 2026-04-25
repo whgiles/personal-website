@@ -43,43 +43,48 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     const article = getArticleBySlug(slug);
 
     return (
-      <main className="min-h-screen px-4 py-6 md:px-6 md:py-8">
-        <div className="hn-shell overflow-hidden border hn-rule bg-[var(--panel)]">
-          <div className="hn-topline" />
-          <div className="mx-auto max-w-3xl px-5 py-6 md:px-8 md:py-8">
-            <Link href="/articles" className="hn-link text-sm font-medium">
-              ← All articles
-            </Link>
+      <main className="mx-auto max-w-3xl px-6 py-16 md:px-8">
+        <Link
+          href="/articles"
+          className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
+        >
+          ← All articles
+        </Link>
 
-            <header className="mt-7 border-b hn-rule pb-8">
-              <p className="hn-kicker">Article</p>
-              <h1 className="mt-3 text-4xl font-bold tracking-tight md:text-5xl">{article.title}</h1>
-              <p className="mt-4 text-base leading-8 hn-muted md:text-lg">{article.summary}</p>
-              <div className="mt-5 flex flex-wrap gap-3 text-sm hn-muted">
-                <span>{formatDate(article.publishedAt)}</span>
+        <header className="mt-8 border-b border-slate-200 pb-8 dark:border-slate-800">
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-blue-600 dark:text-blue-400">
+            Article
+          </p>
+          <h1 className="mt-4 text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 md:text-5xl">
+            {article.title}
+          </h1>
+          <p className="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-300">{article.summary}</p>
+          <div className="mt-6 flex flex-wrap gap-3 text-sm text-slate-500 dark:text-slate-400">
+            <span>{formatDate(article.publishedAt)}</span>
+            <span>•</span>
+            <span>{article.readingTimeText}</span>
+            {article.updatedAt ? (
+              <>
                 <span>•</span>
-                <span>{article.readingTimeText}</span>
-                {article.updatedAt ? (
-                  <>
-                    <span>•</span>
-                    <span>Updated {formatDate(article.updatedAt)}</span>
-                  </>
-                ) : null}
-              </div>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {article.tags.map((tag) => (
-                  <span key={tag} className="hn-tag">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </header>
-
-            <section className="mt-10">
-              <ArticleBody source={article.content} />
-            </section>
+                <span>Updated {formatDate(article.updatedAt)}</span>
+              </>
+            ) : null}
           </div>
-        </div>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {article.tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </header>
+
+        <section className="mt-10">
+          <ArticleBody source={article.content} />
+        </section>
       </main>
     );
   } catch {
