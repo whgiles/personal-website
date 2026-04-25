@@ -13,7 +13,7 @@ const skills: { category: string; items: string[] }[] = [
   },
   {
     category: "Cloud, DevOps & Infrastructure",
-    items: ["Google Cloud Platform", "Cloud Run", "Pub/Sub", "Terraform", "Docker", "GitHub Actions", "Kubernetes", "k3s"],
+    items: ["Google Cloud Platform", "Cloud Run", "Pub/Sub", "Terraform", "Docker", "GitHub Actions", "Kubernetes", "Flux"],
   },
 ];
 
@@ -32,9 +32,6 @@ export default function HomePage() {
               <h1 className="mt-4 text-4xl font-bold tracking-tight md:text-6xl">W. Hunter Giles</h1>
               <p className="mt-4 text-xl font-medium text-slate-700 dark:text-slate-300">
                 Software and Machine Learning Engineer
-              </p>
-              <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600 dark:text-slate-300">
-                I build scalable data platforms, backend systems, and cloud infrastructure with a bias for reliability, clarity, and operational excellence.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a
